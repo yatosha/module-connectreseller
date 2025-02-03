@@ -1288,6 +1288,11 @@ class Connectreseller extends RegistrarModule
         if (!empty($post)) {
             $command = new ConnectresellerDomain($api);
             if (!isset($post['action'])) {
+                // Replace @ with domain name in RecordName
+                if (isset($post['RecordName']) && $post['RecordName'] === '@') {
+                    $post['RecordName'] = $service_fields->domain;
+                }
+
                 $command->ManageDNSRecords(['WebsiteId' => $domain_settings->websiteId]);
                 $response = $command->AddDNSRecord(array_merge([
                     'DNSZoneID' => $domain_settings->dnszoneId ?? null,

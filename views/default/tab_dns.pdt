@@ -21,7 +21,7 @@
                     ?>
                     <tr>
                         <td><?php echo ($record->recordType ?? null);?></td>
-                        <td><?php echo ($record->recordName ?? null);?></td>
+                        <td><?php echo (($record->recordName ?? null) == $service_fields->domain ? '@' : ($record->recordName ?? null));?></td>
                         <td style="max-width: 200px; overflow: hidden;"><?php echo ($record->recordContent ?? null);?></td>
                         <td><?php echo ($record->recordTTL ?? null);?></td>
                         <td>
