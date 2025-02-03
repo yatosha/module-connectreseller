@@ -1294,10 +1294,10 @@ class Connectreseller extends RegistrarModule
                     'RecordPriority' => 1
                 ], $post));
                 $this->processResponse($api, $response);
-
+        
                 $vars = (object) $post;
             }
-
+        
             // Delete DNS record
             if (($post['action'] ?? '') == 'delete') {
                 $command->ManageDNSRecords(['WebsiteId' => $domain_settings->websiteId]);
@@ -1319,7 +1319,8 @@ class Connectreseller extends RegistrarModule
             'SOA' => 'SOA',
             'NS' => 'NS',
             'CNAME' => 'CNAME',
-            'MX' => ' MX'
+            'MX' => 'MX',
+            'TXT' => 'TXT' // Add TXT record type here
         ];
 
         $this->view->set('service_fields', $service_fields);
