@@ -1,6 +1,42 @@
-<div id="dns-records" class="pad">
-    <h4><?php $this->_('Connectreseller.tab_client_dns.title_list');?></h4>
+<?php
+$default_nameservers = [
+    '8549.dns1.managedns.org',
+    '8549.dns2.managedns.org',
+    '8549.dns3.managedns.org',
+    '8549.dns4.managedns.org'
+];
 
+$using_default_nameservers = true;
+if (isset($nameservers) && is_array($nameservers) && !empty($nameservers)) {
+    foreach ($nameservers as $nameserver) {
+        if (isset($nameserver['url']) && !in_array($nameserver['url'], $default_nameservers)) {
+            $using_default_nameservers = false;
+            break;
+        }
+    }
+} else {
+    $using_default_nameservers = false;
+}
+?>
+<div id="dns-records" class="pad">
+<?php if (!$using_default_nameservers) { ?>
+    <h4><?php $this->_('Connectreseller.tab_client_dns.title_default_nameservers');?></h4>
+    <p><?php $this->_('Connectreseller.tab_client_dns.note_default_nameservers');?></p>
+    <?php
+    $this->Form->create();
+    ?>
+    <?php
+    $this->Form->fieldHidden('set_default_nameservers', '1');
+    ?>
+    <button class="btn btn-light float-right" type="submit">
+        <i class="fas fa-edit"></i> <?php $this->_('Connectreseller.tab_client_dns.field_set_default_nameservers'); ?>
+    </button>
+    <?php
+    $this->Form->end();
+    ?>
+<?php } ?>
+</br>
+    <h4><?php $this->_('Connectreseller.tab_client_dns.title_list');?></h4>
     <div class="table-responsive mt-2 mb-3">
         <table class="table table-curved table-striped">
             <thead>

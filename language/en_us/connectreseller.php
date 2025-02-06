@@ -241,3 +241,8 @@ $lang['Connectreseller.domain_fields.purpose.p2'] = 'Non-profit';
 $lang['Connectreseller.domain_fields.purpose.p3'] = 'Personal';
 $lang['Connectreseller.domain_fields.purpose.p4'] = 'Educational';
 $lang['Connectreseller.domain_fields.purpose.p5'] = 'Governmental';
+
+$lang['Connectreseller.tab_client_dns.title_default_nameservers'] = 'Default Nameservers';
+$lang['Connectreseller.tab_client_dns.field_set_default_nameservers'] = 'Set Default Nameservers';
+$lang['Connectreseller.tab_client_dns.note_default_nameservers'] = 'To use DNS Management, you must set the default nameservers.';
+?>

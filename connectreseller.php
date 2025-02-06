@@ -1287,30 +1287,40 @@ class Connectreseller extends RegistrarModule
         // Add DNS record
         if (!empty($post)) {
             $command = new ConnectresellerDomain($api);
-            if (!isset($post['action'])) {
-                // Replace @ with domain name in RecordName
-                if (isset($post['RecordName']) && $post['RecordName'] === '@') {
-                    $post['RecordName'] = $service_fields->domain;
+            if (isset($post['set_default_nameservers']) && $post['set_default_nameservers'] == '1') {
+                $nameservers = [
+                    '8549.dns1.managedns.org',
+                    '8549.dns2.managedns.org',
+                    '8549.dns3.managedns.org',
+                    '8549.dns4.managedns.org'
+                ];
+                $this->setDomainNameservers($service_fields->domain, $service->module_row_id, $nameservers);
+            } else {
+                if (!isset($post['action'])) {
+                    // Replace @ with domain name in RecordName
+                    if (isset($post['RecordName']) && $post['RecordName'] === '@') {
+                        $post['RecordName'] = $service_fields->domain;
+                    }
+
+                    $command->ManageDNSRecords(['WebsiteId' => $domain_settings->websiteId]);
+                    $response = $command->AddDNSRecord(array_merge([
+                        'DNSZoneID' => $domain_settings->dnszoneId ?? null,
+                        'RecordPriority' => 1
+                    ], $post));
+                    $this->processResponse($api, $response);
+
+                    $vars = (object) $post;
                 }
 
-                $command->ManageDNSRecords(['WebsiteId' => $domain_settings->websiteId]);
-                $response = $command->AddDNSRecord(array_merge([
-                    'DNSZoneID' => $domain_settings->dnszoneId ?? null,
-                    'RecordPriority' => 1
-                ], $post));
-                $this->processResponse($api, $response);
-        
-                $vars = (object) $post;
-            }
-        
-            // Delete DNS record
-            if (($post['action'] ?? '') == 'delete') {
-                $command->ManageDNSRecords(['WebsiteId' => $domain_settings->websiteId]);
-                $response = $command->DeleteDNSRecord([
-                    'DNSZoneID' => $domain_settings->dnszoneId ?? null,
-                    'DNSZoneRecordID' => $post['dnszoneRecordID'] ?? null
-                ]);
-                $this->processResponse($api, $response);
+                // Delete DNS record
+                if (($post['action'] ?? '') == 'delete') {
+                    $command->ManageDNSRecords(['WebsiteId' => $domain_settings->websiteId]);
+                    $response = $command->DeleteDNSRecord([
+                        'DNSZoneID' => $domain_settings->dnszoneId ?? null,
+                        'DNSZoneRecordID' => $post['dnszoneRecordID'] ?? null
+                    ]);
+                    $this->processResponse($api, $response);
+                }
             }
         }
 
@@ -1333,6 +1343,12 @@ class Connectreseller extends RegistrarModule
         $this->view->set('client_id', $service->client_id);
         $this->view->set('dns_records', $dns_records ?? []);
         $this->view->set('supported_types', $supported_types);
+	try {
+            $nameservers = $this->getDomainNameServers($service_fields->domain, $service->module_row_id);
+        } catch (Throwable $e) {
+            $this->Input->setErrors(['errors' => ['nameservers' => $e->getMessage()]]);
+        }
+        $this->view->set('nameservers', $nameservers ?? []);
         $this->view->set('vars', ($vars ?? new stdClass()));
 
         $this->view->setDefaultView('components' . DS . 'modules' . DS . 'connectreseller' . DS);
