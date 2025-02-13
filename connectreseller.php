@@ -1302,6 +1302,11 @@ class Connectreseller extends RegistrarModule
                         $post['RecordName'] = $service_fields->domain;
                     }
 
+                    // Append domain name to CNAME record if not already present
+                    if (isset($post['RecordType']) && $post['RecordType'] === 'CNAME' && isset($post['RecordName']) && $post['RecordName'] !== $service_fields->domain && !str_contains($post['RecordName'], '.')) {
+                        $post['RecordName'] .= '.' . $service_fields->domain;
+                    }
+
                     $command->ManageDNSRecords(['WebsiteId' => $domain_settings->websiteId]);
                     $response = $command->AddDNSRecord(array_merge([
                         'DNSZoneID' => $domain_settings->dnszoneId ?? null,
