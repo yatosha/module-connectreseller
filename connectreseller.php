@@ -1308,11 +1308,21 @@ class Connectreseller extends RegistrarModule
                     }
 
                     $command->ManageDNSRecords(['WebsiteId' => $domain_settings->websiteId]);
-                    $response = $command->AddDNSRecord(array_merge([
+                    $base_params = [
                         'DNSZoneID' => $domain_settings->dnszoneId ?? null,
-                        'RecordPriority' => 1
-                    ], $post));
-                    $this->processResponse($api, $response);
+                    ];
+                    if ($post['RecordType'] == 'MX') {
+                        $base_params['RecordPriority'] = $post['RecordPriority'] ?? 10;
+                    } else {
+                        $base_params['RecordPriority'] = 1;
+                    }
+
+                    $response = $command->AddDNSRecord(array_merge(
+                        $base_params,
+                        $post
+                    ));
+					
+					$this->processResponse($api, $response);
 
                     $vars = (object) $post;
                 }

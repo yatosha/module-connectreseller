@@ -123,6 +123,14 @@ if (isset($nameservers) && is_array($nameservers) && !empty($nameservers)) {
                 ?>
             </div>
         </div>
+		<div class="col-md-3" id="mx_priority_field" style="display: none;">
+            <div class="form-group">
+                <?php
+                $this->Form->label($this->_('Connectreseller.tab_dns.priority', true), 'priority');
+                $this->Form->fieldText('RecordPriority', $vars->RecordPriority ?? 10, ['id' => 'priority', 'class' => 'form-control']);
+                ?>
+            </div>
+        </div>
     </div>
 
     <button class="btn btn-light float-right" type="submit">
@@ -131,4 +139,24 @@ if (isset($nameservers) && is_array($nameservers) && !empty($nameservers)) {
     <?php
     $this->Form->end();
     ?>
+
+	<script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const recordTypeSelect = document.getElementById('record_type');
+            const mxPriorityField = document.getElementById('mx_priority_field');
+
+            function togglePriorityField() {
+                if (recordTypeSelect.value === 'MX') {
+                    mxPriorityField.style.display = 'block';
+                } else {
+                    mxPriorityField.style.display = 'none';
+                }
+            }
+
+            recordTypeSelect.addEventListener('change', togglePriorityField);
+
+            // Initial state on page load
+            togglePriorityField();
+        });
+    </script>
 </div>

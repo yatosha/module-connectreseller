@@ -173,6 +173,7 @@ $lang['Connectreseller.tab_dns.record_type'] = 'Type';
 $lang['Connectreseller.tab_dns.host'] = 'Host';
 $lang['Connectreseller.tab_dns.value'] = 'Value';
 $lang['Connectreseller.tab_dns.ttl'] = 'TTL';
+$lang['Connectreseller.tab_dns.priority'] = 'Priority';
 $lang['Connectreseller.tab_dns.field_delete'] = 'Delete Record(s)';
 
 $lang['Connectreseller.tab_dns.record_type'] = 'Record Type';
